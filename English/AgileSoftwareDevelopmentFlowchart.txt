@@ -1,0 +1,86 @@
+// Define the Scrum team
+const team = {
+    productOwner: "John",
+    scrumMaster: "Jane",
+    developers: ["Alice", "Bob", "Charlie"]
+}
+
+// Define the Product Backlog
+const productBacklog = [    {id: 1, name: "User authentication", priority: 1, storyPoints: 5, status: "To Do"},    {id: 2, name: "User profile page", priority: 2, storyPoints: 8, status: "To Do"},    {id: 3, name: "Admin dashboard", priority: 3, storyPoints: 13, status: "To Do"}]
+
+// Define the Sprint Backlog
+let sprintBacklog = []
+
+// Define the Sprint duration in weeks
+const sprintDuration = 2
+
+// Sprint planning meeting
+function planSprint() {
+    for (let j = 0; j < productBacklog.length; j++) {
+        if (productBacklog[j].status == "To Do") {
+            // Add the User Story to the Sprint Backlog
+            sprintBacklog.push(productBacklog[j])
+            
+            // Assign the User Story to a Developer
+            const developerIndex = i % team.developers.length
+            sprintBacklog[sprintBacklog.length - 1].assignedTo = team.developers[developerIndex]
+            
+            // Move the User Story to the "In Progress" status
+            sprintBacklog[sprintBacklog.length - 1].status = "In Progress"
+            
+            // Remove the User Story from the Product Backlog
+            productBacklog.splice(j, 1)
+            
+            // Break out of the loop
+            break
+        }
+    }
+}
+
+// Daily Scrum meeting
+function doDailyScrum() {
+    for (let k = 0; k < sprintBacklog.length; k++) {
+        // Update the status of the User Story
+        sprintBacklog[k].status = "In Progress"
+        
+        // Check for impediments
+        if (sprintBacklog[k].impediment) {
+            // Raise the impediment with the Scrum Master
+            team.scrumMaster.raiseImpediment(sprintBacklog[k].impediment)
+        }
+        
+        // Check if the User Story is complete
+        if (sprintBacklog[k].status == "Done") {
+            // Move the User Story to the Product Backlog
+            productBacklog.push(sprintBacklog[k])
+            
+            // Remove the User Story from the Sprint Backlog
+            sprintBacklog.splice(k, 1)
+            
+            // Break out of the loop
+            break
+        }
+    }
+}
+// Sprint Review meeting
+function reviewSprint() {
+    let completedStories = 0
+    for (let l = 0; l < sprintBacklog.length; l++) {
+        if (sprintBacklog[l].status == "Done") {
+            completedStories++
+        }
+    }
+    const sprintVelocity = completedStories / sprintDuration
+    team.scrumMaster.updateSprintVelocity(sprintVelocity)
+}
+
+// Start the Sprint
+function startSprint() {
+    for (let i = 0; i < sprintDuration; i++) {
+        planSprint()
+        doDailyScrum()
+        reviewSprint()
+    }
+}
+
+startSprint()
